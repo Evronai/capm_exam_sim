@@ -1,0 +1,10 @@
+name: capm-env
+dependencies:
+  - python=3.9
+  - pip
+  - pip:
+    - streamlit==1.28.1
+    - pillow==10.1.0
+    - pandas==2.0.3
+    - numpy==1.24.3
+    - plotly==5.17.0

@@ -3,7 +3,6 @@ import random
 import time
 import json
 from datetime import datetime
-import uuid
 
 # -------------------- PAGE CONFIG --------------------
 st.set_page_config(
@@ -21,15 +20,15 @@ EXAM_CONFIG = {
 
 DOMAINS = ["Fundamentals", "Predictive", "Agile", "Business Analysis"]
 
-# -------------------- COMPLETE 150 QUESTION BANK --------------------
+# -------------------- 150 QUESTIONS --------------------
 QUESTIONS = []
 
-# Generate 150 unique questions programmatically
-def generate_questions():
+# Generate all 150 questions
+def init_questions():
     questions = []
     
-    # Domain 1: Fundamentals (54 questions)
-    fundamentals_qs = [
+    # 54 Fundamentals questions
+    fundamentals = [
         {
             "q": "Which process group includes the Develop Project Charter process?",
             "opts": ["Initiating", "Planning", "Executing", "Monitoring and Controlling"],
@@ -92,8 +91,8 @@ def generate_questions():
         }
     ]
     
-    # Domain 2: Predictive (26 questions)
-    predictive_qs = [
+    # 26 Predictive questions
+    predictive = [
         {
             "q": "What does CPI = 0.9 indicate?",
             "opts": ["Under budget", "Over budget", "On budget", "Cannot determine"],
@@ -123,17 +122,11 @@ def generate_questions():
             "opts": ["Crashing and fast tracking", "Resource leveling", "Monte Carlo analysis", "What-if analysis"],
             "correct": 0,
             "exp": "Crashing adds resources, fast tracking does tasks in parallel."
-        },
-        {
-            "q": "What is float?",
-            "opts": ["Time an activity can be delayed", "Project budget buffer", "Resource availability", "Risk contingency"],
-            "correct": 0,
-            "exp": "Float (slack) is the amount of time an activity can be delayed."
         }
     ]
     
-    # Domain 3: Agile (30 questions)
-    agile_qs = [
+    # 30 Agile questions
+    agile = [
         {
             "q": "Who manages the Product Backlog in Scrum?",
             "opts": ["Scrum Master", "Product Owner", "Development Team", "Project Manager"],
@@ -163,17 +156,11 @@ def generate_questions():
             "opts": ["Team speed", "Work completed per Sprint", "Story points remaining", "Sprint duration"],
             "correct": 1,
             "exp": "Velocity is the amount of work completed in a Sprint."
-        },
-        {
-            "q": "The Sprint Retrospective focuses on:",
-            "opts": ["Product increment", "Process improvement", "Next Sprint planning", "Backlog refinement"],
-            "correct": 1,
-            "exp": "The Retrospective is for process improvement."
         }
     ]
     
-    # Domain 4: Business Analysis (40 questions)
-    ba_qs = [
+    # 40 Business Analysis questions
+    ba = [
         {
             "q": "Requirements traceability is used to:",
             "opts": ["Track costs", "Link requirements to deliverables", "Create schedules", "Assign resources"],
@@ -203,58 +190,52 @@ def generate_questions():
             "opts": ["Interviews and workshops", "Creating the WBS", "Developing schedule", "Risk analysis"],
             "correct": 0,
             "exp": "Elicitation techniques gather requirements from stakeholders."
-        },
-        {
-            "q": "What is a business requirement?",
-            "opts": ["Technical specification", "High-level organizational need", "User interface design", "Database schema"],
-            "correct": 1,
-            "exp": "Business requirements are high-level organizational needs."
         }
     ]
     
-    # Generate 54 Fundamentals questions (repeat with variations)
+    # Generate 54 Fundamentals
     for i in range(54):
-        base = fundamentals_qs[i % len(fundamentals_qs)]
+        base = fundamentals[i % len(fundamentals)]
         questions.append({
             "id": len(questions) + 1,
             "domain": "Fundamentals",
-            "question": base["q"] if i < len(fundamentals_qs) else f"{base['q']} (Scenario {i})",
+            "question": base["q"] if i < len(fundamentals) else f"{base['q']} (Scenario {i})",
             "options": base["opts"],
             "correct": base["correct"],
             "explanation": base["exp"]
         })
     
-    # Generate 26 Predictive questions
+    # Generate 26 Predictive
     for i in range(26):
-        base = predictive_qs[i % len(predictive_qs)]
+        base = predictive[i % len(predictive)]
         questions.append({
             "id": len(questions) + 1,
             "domain": "Predictive",
-            "question": base["q"] if i < len(predictive_qs) else f"{base['q']} (Case {i})",
+            "question": base["q"] if i < len(predictive) else f"{base['q']} (Case {i})",
             "options": base["opts"],
             "correct": base["correct"],
             "explanation": base["exp"]
         })
     
-    # Generate 30 Agile questions
+    # Generate 30 Agile
     for i in range(30):
-        base = agile_qs[i % len(agile_qs)]
+        base = agile[i % len(agile)]
         questions.append({
             "id": len(questions) + 1,
             "domain": "Agile",
-            "question": base["q"] if i < len(agile_qs) else f"{base['q']} (Variant {i})",
+            "question": base["q"] if i < len(agile) else f"{base['q']} (Variant {i})",
             "options": base["opts"],
             "correct": base["correct"],
             "explanation": base["exp"]
         })
     
-    # Generate 40 BA questions
+    # Generate 40 BA
     for i in range(40):
-        base = ba_qs[i % len(ba_qs)]
+        base = ba[i % len(ba)]
         questions.append({
             "id": len(questions) + 1,
             "domain": "Business Analysis",
-            "question": base["q"] if i < len(ba_qs) else f"{base['q']} (Example {i})",
+            "question": base["q"] if i < len(ba) else f"{base['q']} (Example {i})",
             "options": base["opts"],
             "correct": base["correct"],
             "explanation": base["exp"]
@@ -262,7 +243,7 @@ def generate_questions():
     
     return questions
 
-QUESTIONS = generate_questions()
+QUESTIONS = init_questions()
 
 # -------------------- SESSION STATE --------------------
 if "page" not in st.session_state:
@@ -288,13 +269,10 @@ with st.sidebar:
     pages = ["🏠 Home", "📚 Study", "📝 Exam", "📖 Review"]
     choice = st.radio("Navigate", pages)
     st.session_state.page = choice.split(" ")[1]
-    
-    st.markdown("---")
-    st.info(f"**Exam:** 150 questions\n**Time:** 3 hours")
 
 # -------------------- HOME PAGE --------------------
 if st.session_state.page == "Home":
-    st.title("CAPM® Exam Simulator")
+    st.title("🎯 CAPM Exam Simulator 2026")
     
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -305,7 +283,11 @@ if st.session_state.page == "Home":
         st.metric("Domains", "4")
     
     st.markdown("---")
-    st.markdown("### Quick Start")
+    st.markdown("### Welcome!")
+    st.write("This simulator matches the actual CAPM exam format:")
+    st.write("- 150 questions (135 scored, 15 pretest)")
+    st.write("- 3-hour time limit with break at question 75")
+    st.write("- 4 domains covering all exam topics")
     
     if st.button("🚀 Start Full Exam", use_container_width=True):
         st.session_state.exam_questions = random.sample(QUESTIONS, 150)
@@ -320,7 +302,7 @@ if st.session_state.page == "Home":
 elif st.session_state.page == "Study":
     st.title("📚 Study Materials")
     
-    topic = st.selectbox("Select Domain", ["Fundamentals", "Predictive", "Agile", "Business Analysis"])
+    topic = st.selectbox("Select Domain", DOMAINS)
     
     if topic == "Fundamentals":
         st.markdown("""
@@ -336,14 +318,7 @@ elif st.session_state.page == "Study":
         - **Executing**: Complete the work
         - **Monitoring & Controlling**: Track progress
         - **Closing**: Finalize and transfer
-        
-        ### Key Documents
-        - Project Charter
-        - Project Management Plan
-        - Requirements Documentation
-        - Risk Register
         """)
-    
     elif topic == "Predictive":
         st.markdown("""
         ### Waterfall Methodology
@@ -357,21 +332,9 @@ elif st.session_state.page == "Study":
         - **AC**: Actual Cost
         - **CPI**: EV/AC (Cost Performance Index)
         - **SPI**: EV/PV (Schedule Performance Index)
-        
-        ### Formulas
-        - **EAC** = BAC/CPI
-        - **ETC** = EAC - AC
-        - **VAC** = BAC - EAC
         """)
-    
     elif topic == "Agile":
         st.markdown("""
-        ### Agile Manifesto
-        1. Individuals & interactions > Processes & tools
-        2. Working software > Documentation
-        3. Customer collaboration > Contract negotiation
-        4. Responding to change > Following a plan
-        
         ### Scrum Roles
         - **Product Owner**: Maximizes value, manages backlog
         - **Scrum Master**: Facilitates, removes impediments
@@ -383,14 +346,8 @@ elif st.session_state.page == "Study":
         - Daily Scrum (15 min)
         - Sprint Review
         - Sprint Retrospective
-        
-        ### Artifacts
-        - Product Backlog
-        - Sprint Backlog
-        - Increment
         """)
-    
-    else:  # Business Analysis
+    else:
         st.markdown("""
         ### Requirements Types
         - **Business**: High-level organizational needs
@@ -405,11 +362,6 @@ elif st.session_state.page == "Study":
         - Document Analysis
         - Surveys
         - Prototyping
-        
-        ### Traceability
-        - Links requirements to objectives
-        - Links requirements to deliverables
-        - Ensures all requirements are met
         """)
 
 # -------------------- EXAM PAGE --------------------
@@ -442,51 +394,58 @@ elif st.session_state.page == "Exam":
         # Timer
         elapsed = time.time() - st.session_state.start_time
         remaining = max(0, EXAM_CONFIG["time_minutes"] * 60 - elapsed)
-        hours = remaining // 3600
-        minutes = (remaining % 3600) // 60
-        seconds = remaining % 60
         
-        col1, col2 = st.columns([3, 1])
-        with col1:
-            st.progress((st.session_state.current_q + 1) / 150)
-        with col2:
-            st.metric("Time Left", f"{int(hours):02d}:{int(minutes):02d}:{int(seconds):02d}")
-        
-        # Current question
-        q = st.session_state.exam_questions[st.session_state.current_q]
-        
-        st.markdown(f"### Question {st.session_state.current_q + 1} of 150")
-        st.markdown(f"**{q['question']}**")
-        
-        # Options
-        options = q["options"]
-        selected = st.radio("Select your answer:", options, key=f"q_{st.session_state.current_q}")
-        
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            if st.button("Previous") and st.session_state.current_q > 0:
-                if selected:
-                    st.session_state.user_answers[st.session_state.current_q] = options.index(selected)
-                st.session_state.current_q -= 1
+        # Break check
+        if st.session_state.current_q == EXAM_CONFIG["break_after"]:
+            st.info("### ⏸️ Break Time - 10 Minutes")
+            st.write("Take a short break. Click 'Resume' when ready.")
+            if st.button("Resume Exam"):
+                st.session_state.current_q += 1
                 st.rerun()
-        
-        with col2:
-            if st.button("Save & Next"):
-                if selected:
-                    st.session_state.user_answers[st.session_state.current_q] = options.index(selected)
-                if st.session_state.current_q < 149:
-                    st.session_state.current_q += 1
+        else:
+            # Progress
+            col1, col2 = st.columns([3, 1])
+            with col1:
+                st.progress((st.session_state.current_q + 1) / 150)
+                st.write(f"Question {st.session_state.current_q + 1} of 150")
+            with col2:
+                mins = remaining // 60
+                secs = remaining % 60
+                st.metric("Time Left", f"{int(mins)}:{int(secs):02d}")
+            
+            # Current question
+            q = st.session_state.exam_questions[st.session_state.current_q]
+            st.markdown(f"**{q['question']}**")
+            
+            # Options
+            options = q["options"]
+            selected = st.radio("Select answer:", options, key=f"q_{st.session_state.current_q}")
+            
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                if st.button("Previous") and st.session_state.current_q > 0:
+                    if selected:
+                        st.session_state.user_answers[st.session_state.current_q] = options.index(selected)
+                    st.session_state.current_q -= 1
                     st.rerun()
-                else:
+            
+            with col2:
+                if st.button("Save & Next"):
+                    if selected:
+                        st.session_state.user_answers[st.session_state.current_q] = options.index(selected)
+                    if st.session_state.current_q < 149:
+                        st.session_state.current_q += 1
+                        st.rerun()
+                    else:
+                        st.session_state.exam_finished = True
+                        st.rerun()
+            
+            with col3:
+                if st.button("Finish Exam"):
+                    if selected:
+                        st.session_state.user_answers[st.session_state.current_q] = options.index(selected)
                     st.session_state.exam_finished = True
                     st.rerun()
-        
-        with col3:
-            if st.button("Finish Exam"):
-                if selected:
-                    st.session_state.user_answers[st.session_state.current_q] = options.index(selected)
-                st.session_state.exam_finished = True
-                st.rerun()
 
 # -------------------- REVIEW PAGE --------------------
 elif st.session_state.page == "Review":
@@ -504,7 +463,7 @@ elif st.session_state.page == "Review":
     
     st.write(f"Showing {len(filtered)} questions")
     
-    for i, q in enumerate(filtered[:20]):  # Show first 20
+    for i, q in enumerate(filtered[:20]):
         with st.expander(f"{q['domain']}: {q['question'][:100]}..."):
             for j, opt in enumerate(q["options"]):
                 if j == q["correct"]:
